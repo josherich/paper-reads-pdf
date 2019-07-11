@@ -1,5 +1,5 @@
 from crawler.helper import get_content_type, call, clean_url
-from crawler.crawl_methods import get_hrefs_html, get_hrefs_js_simple, ClickCrawler
+from crawler.crawl_methods import get_hrefs_html, get_hrefs_js_simple
 
 
 class Crawler:
@@ -78,8 +78,9 @@ class Crawler:
         if self.crawl_method == "rendered":
             urls = get_hrefs_js_simple(response, self.follow_foreign)
         elif self.crawl_method == "rendered-all":
-            click_crawler = ClickCrawler(self.process_handler, self.executable_path_gecko, response, self.follow_foreign)
-            urls = click_crawler.get_hrefs_js_complex()
+            pass
+            # click_crawler = ClickCrawler(self.process_handler, self.executable_path_gecko, response, self.follow_foreign)
+            # urls = click_crawler.get_hrefs_js_complex()
         else:
             # plain html
             if self.crawl_method is not None and self.crawl_method != "normal":

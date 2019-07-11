@@ -15,3 +15,9 @@ python-dateutil
 flask
 flask_limiter
 tornado
+
+# pdf-crawl
+beautifulsoup4
+click
+requests
+requests_html

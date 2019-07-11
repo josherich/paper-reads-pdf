@@ -13,36 +13,37 @@ import pickle
 
 from utils import Config
 
-# make sure pdftotext is installed
-if not shutil.which('pdftotext'): # needs Python 3.3+
-  print('ERROR: you don\'t have pdftotext installed. Install it first before calling this script')
-  sys.exit()
+def pdf_to_text(pdf_dir, txt_dir):
+  # make sure pdftotext is installed
+  if not shutil.which('pdftotext'): # needs Python 3.3+
+    print('ERROR: you don\'t have pdftotext installed. Install it first before calling this script')
+    sys.exit()
 
-if not os.path.exists(Config.txt_dir):
-  print('creating ', Config.txt_dir)
-  os.makedirs(Config.txt_dir)
+  if not os.path.exists(txt_dir):
+    print('creating ', txt_dir)
+    os.makedirs(txt_dir)
 
-have = set(os.listdir(Config.txt_dir))
-files = os.listdir(Config.pdf_dir)
-for i,f in enumerate(files): # there was a ,start=1 here that I removed, can't remember why it would be there. shouldn't be, i think.
+  have = set(os.listdir(txt_dir))
+  files = os.listdir(pdf_dir)
+  for i,f in enumerate(files): # there was a ,start=1 here that I removed, can't remember why it would be there. shouldn't be, i think.
 
-  txt_basename = f + '.txt'
-  if txt_basename in have:
-    print('%d/%d skipping %s, already exists.' % (i, len(files), txt_basename, ))
-    continue
+    txt_basename = f + '.txt'
+    if txt_basename in have:
+      print('%d/%d skipping %s, already exists.' % (i, len(files), txt_basename, ))
+      continue
 
-  pdf_path = os.path.join(Config.pdf_dir, f)
-  txt_path = os.path.join(Config.txt_dir, txt_basename)
-  cmd = "pdftotext %s %s" % (pdf_path, txt_path)
-  os.system(cmd)
+    pdf_path = os.path.join(pdf_dir, f)
+    txt_path = os.path.join(txt_dir, txt_basename)
+    cmd = "pdftotext %s %s" % (pdf_path, txt_path)
+    os.system(cmd)
 
-  print('%d/%d %s' % (i, len(files), cmd))
+    print('%d/%d %s' % (i, len(files), cmd))
 
-  # check output was made
-  if not os.path.isfile(txt_path):
-    # there was an error with converting the pdf
-    print('there was a problem with parsing %s to text, creating an empty text file.' % (pdf_path, ))
-    os.system('touch ' + txt_path) # create empty file, but it's a record of having tried to convert
+    # check output was made
+    if not os.path.isfile(txt_path):
+      # there was an error with converting the pdf
+      print('there was a problem with parsing %s to text, creating an empty text file.' % (pdf_path, ))
+      os.system('touch ' + txt_path) # create empty file, but it's a record of having tried to convert
 
-  time.sleep(0.01) # silly way for allowing for ctrl+c termination
+    time.sleep(0.01) # silly way for allowing for ctrl+c termination
 
