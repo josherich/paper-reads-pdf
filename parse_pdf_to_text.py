@@ -26,7 +26,8 @@ def pdf_to_text(pdf_dir, txt_dir):
   have = set(os.listdir(txt_dir))
   files = os.listdir(pdf_dir)
   for i,f in enumerate(files): # there was a ,start=1 here that I removed, can't remember why it would be there. shouldn't be, i think.
-
+    if '.pdf' not in f:
+      continue
     txt_basename = f + '.txt'
     if txt_basename in have:
       print('%d/%d skipping %s, already exists.' % (i, len(files), txt_basename, ))

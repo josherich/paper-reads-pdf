@@ -15,6 +15,7 @@ def run(site_uri, depth, output_dir, skip_crawl):
   thumb_pdf(os.path.join(output_dir, name), os.path.join(output_dir, name+'.thumb'))
   analyze(os.path.join(output_dir, name, 'list.csv'), os.path.join(output_dir, name))
 
+  os.mkdir(os.path.join(output_dir, name+'.meta'))
   client = grobid_client(config_path='./grobid/config.json')
   client.process(os.path.join(output_dir, name), os.path.join(output_dir, name+'.meta'), 20, 'processHeaderDocument', True, True, True, True, False)
 
