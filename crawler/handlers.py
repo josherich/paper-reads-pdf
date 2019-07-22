@@ -3,21 +3,46 @@ import os
 import uuid
 from urllib.parse import urlparse
 import psutil
+import hashlib
 
+# BUF_SIZE is totally arbitrary, change for your app!
+BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+md5 = hashlib.md5()
+sha1 = hashlib.sha1()
+
+def hashFile(content):
+    md5.update(content)
+    return md5.hexdigest()
 
 class LocalStoragePDFHandler:
-    def __init__(self, directory, subdirectory):
+    def __init__(self, directory, subdirectory, keep_filename=False):
         self.directory = directory
         self.subdirectory = subdirectory
+        self.keep_filename = keep_filename
+        self.file_unique_dict = {}
 
     def handle(self, response, *args, **kwargs):
         parsed = urlparse(response.url)
-        filename = str(uuid.uuid4()) + ".pdf"
+        filename = get_filename(parsed)
+        hashed = hashFile(response.content)
+
+        if self.keep_filename:
+            if filename in self.file_unique_dict:
+                # different files with the same file name
+                if hashed != self.file_unique_dict[filename]:
+                    filename += f"_{hashed}"
+                # repeated files
+                else:
+                    return
+            else:
+                self.file_unique_dict[filename] = hashed
+        else:
+            filename = hashed + ".pdf"
+
         subdirectory = self.subdirectory or parsed.netloc
         directory = os.path.join(self.directory, subdirectory)
         os.makedirs(directory, exist_ok=True)
         path = os.path.join(directory, filename)
-        path = _ensure_unique(path)
         with open(path, 'wb') as f:
             f.write(response.content)
 

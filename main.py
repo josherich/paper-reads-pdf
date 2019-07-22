@@ -7,9 +7,9 @@ from analyze import analyze
 from thumb_pdf import thumb_pdf
 from grobid.grobid_client import grobid_client
 
-def run(site_uri, depth, output_dir, skip_crawl):
+def run(site_uri, depth, output_dir, skip_crawl, keep_filename):
   if not skip_crawl:
-    crawler.crawl(url=site_uri, depth=depth, output_dir=output_dir, method="normal")
+    crawler.crawl(url=site_uri, depth=depth, output_dir=output_dir, method="normal", keep_filename=keep_filename)
   name = urlparse(site_uri).netloc
   pdf_to_text(os.path.join(output_dir, name), os.path.join(output_dir, name+'.txt'))
   thumb_pdf(os.path.join(output_dir, name), os.path.join(output_dir, name+'.thumb'))
@@ -30,6 +30,7 @@ if __name__ == "__main__":
   parser.add_argument('--depth', type=int, default=3, help='crawling depth')
   parser.add_argument('--output_dir', type=str, default='data', help='output dir')
   parser.add_argument("--skip_crawl", action="store_true", help="set to skip crawl")
+  parser.add_argument("--keep_filename", action="store_true", help="use hashed filename as default")
 
   args = parser.parse_args()
-  run(args.page_uri, args.depth, args.output_dir, args.skip_crawl)
+  run(args.page_uri, args.depth, args.output_dir, args.skip_crawl, args.keep_filename)
