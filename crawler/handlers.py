@@ -30,7 +30,7 @@ class LocalStoragePDFHandler:
             if filename in self.file_unique_dict:
                 # different files with the same file name
                 if hashed != self.file_unique_dict[filename]:
-                    filename += f"_{hashed}"
+                    filename = filename.split('.')[0] + f"_{hashed}" + '.pdf'
                 # repeated files
                 else:
                     return
