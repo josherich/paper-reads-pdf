@@ -54,7 +54,7 @@ def read_csv(filename):
         # print("%10s"%col)
   return filelist
 
-def analyze(csv_file, output_dir):
+def analyze(csv_file, txt_dir):
   db = read_csv(csv_file)
 
   # read all text files for all papers into memory
@@ -63,8 +63,8 @@ def analyze(csv_file, output_dir):
   for idvv in db:
     n += 1
     # idvv = '%sv%d' % (j['_rawid'], j['_version'])
-
-    txt_path = os.path.join(output_dir + '.txt', idvv + '.txt')
+    # merged text_path
+    txt_path = os.path.join(txt_dir, idvv + '.txt')
     if os.path.isfile(txt_path): # some pdfs dont translate to txt
       with open(txt_path, 'r') as f:
         txt = f.read()
@@ -139,4 +139,4 @@ def analyze(csv_file, output_dir):
 
   print("writing", Config.sim_path)
   # safe_pickle_dump(sim_dict, Config.sim_path)
-  write_json(os.path.join(output_dir, 'sim_dict.json'), sim_dict)
+  write_json(os.path.join(txt_dir, 'sim_dict.json'), sim_dict)
