@@ -72,7 +72,7 @@ class CSVStatsPDFHandler:
     def handle(self, response, depth, previous_url, local_name, *args, **kwargs):
         parsed_url = urlparse(response.url)
         name = self.name or parsed_url.netloc
-        output = os.path.join(self.directory, name, 'list.csv')
+        output = os.path.join(self.directory, 'list.csv')
         if not os.path.isfile(output):
             with open(output, 'w') as file:
                 csv.writer(file).writerow(self._FIELDNAMES)
