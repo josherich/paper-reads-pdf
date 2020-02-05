@@ -1,6 +1,7 @@
 import logging
 import sys
 from urllib.parse import urlparse
+import hashlib
 
 from crawler.crawler import Crawler
 from crawler.downloaders import RequestsDownloader
@@ -19,6 +20,7 @@ logging.basicConfig(
 
 requests_downloader = RequestsDownloader()
 
+md5 = hashlib.md5()
 
 def crawl(url, output_dir, depth=2, method="normal", gecko_path="geckodriver", page_name=None, custom_stats_handler=None, custom_process_handler=None, keep_filename=False):
     head_handlers = {}
@@ -27,6 +29,8 @@ def crawl(url, output_dir, depth=2, method="normal", gecko_path="geckodriver", p
     # get name of page for sub-directories etc. if not custom name given
     if page_name is None:
         page_name = urlparse(url).netloc
+        md5.update(page_name.encode('utf-8'))
+        page_name += md5.hexdigest()
 
     get_handlers['application/pdf'] = LocalStoragePDFHandler(
         directory=output_dir, subdirectory=page_name, keep_filename=keep_filename)
